@@ -1,7 +1,28 @@
 //unix shell en C
 
-// utilisation de syscall, fork(), pour dupliquer
-// 
+// commande pour compiler 
+// gcc -o shell shell.c 
+// puis lancer la commande ./shell pour lance le programme
+// man 3p pour approfondir sur les syscall
+// aussi POSIX specification section 13
+//
+// Ce Shell n'a pour le moment pas beaucoup de fonction implémenté 
+
+
+// déclaration des includes
+#include <sys/wait.h> // waitpid, WUNTRACED, WIFEXITED, WIFSIGNALED
+#include <unistd.h>   // fork, execvp, chdir
+#include <stdlib.h>   // malloc, realloc, free, exit, EXIT_SUCCESS, EXIT_FAILURE
+#include <stdio.h>    // printf, fprintf, perror
+#include <string.h>   // strtok, strcmp
+#include <sys/types>  // pid_t
+
+
+//déclaration global
+
+
+// utilisation de syscall, fork(), pou dupliquer
+
 int shell_launch(char **args){
   
   pid_t pid, wpid;
@@ -52,17 +73,17 @@ int (*integre_func[]) (char **) = {
 };
 
 int shell_num_funcinte() {
-  return sizeof(func_integre_str) / sizeof(char *);
+  return sizeof(list_func_integre_str) / sizeof(char *);
 
 }
 
 // Maintenant du coup on créé les fonctions
 // 
 
-int shell_cd(char **){
+int shell_cd(char **args){
   
   if (args[1] == NULL) {
-    fprintf(stderr, "Erreur dans les arguments attendu,\"cd\" \n" )
+    fprintf(stderr, "Erreur dans les arguments attendu,\"cd\" \n");
   } else {
     if (chdir(args[1]) != 0 ) {
       perror("shell_cd");
@@ -105,7 +126,7 @@ int shell_execute(char **args) {
   }
 
   for (i =0; i < shell_num_funcinte(); i++){
-    if (strcomp(args[0], list_func_integre_str[i]) == 0) {
+    if (strcmp(args[0], list_func_integre_str[i]) == 0) {
       return (*integre_func[i])(args);
     }
   }
