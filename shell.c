@@ -1,5 +1,99 @@
 //unix shell en C
 
+// utilisation de syscall, fork(), pour dupliquer
+// 
+int shell_launch(char **args){
+  
+  pid_t pid, wpid;
+  int status;
+  pid = fork();
+  
+  if (pid == 0) {
+    // nouveau proc fils
+    
+    if (execvp(args[0], args) == -1) {
+      perror("SHELL");
+    }
+    exit(EXIT_FAILURE);
+  
+  }else if (pid < 0) {
+    // erreur sur la création du proc
+    perror("SHELL");
+  
+  } else {
+    // proc parent
+    do {
+      wpid = waitpid(pid, &status, WUNTRACED);
+    } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+
+  }
+  
+  return 1;
+
+}
+
+// déclaration des fonctions construit/intégré pour le shell directement sans passer par fork
+int shell_cd(char **args);
+int shell_help(char **args);
+int shell_exit(char **args);
+
+// Liste des fonctions intégré
+char *list_func_integre_str[] = {
+  "cd",
+  "help",
+  "exit"
+};
+
+
+int (*integre_func[]) (char **) = {
+  &shell_cd,
+  &shell_help,
+  &shell_exit
+};
+
+int shell_num_funcinte() {
+  return sizeof(func_integre_str) / sizeof(char *);
+
+}
+
+// Maintenant du coup on créé les fonctions
+// 
+
+int shell_cd(char **){
+  
+  if (args[1] == NULL) {
+    fprintf(stderr, "Erreur dans les arguments attendu,\"cd\" \n" )
+  } else {
+    if (chdir(args[1]) != 0 ) {
+      perror("shell_cd");
+    }
+  }
+
+  return 1;
+
+}
+
+int shell_help(char **args) {
+  int i;
+  printf("C'est mon shell, Blonin'shell ");
+  printf("Il suffit de taper le nom d'une commande avec les arguments et appuyer sur entrer\n");
+  printf("Les commandes pré-intégré sont les suivant :\n");
+  for (i =0; i <shell_num_funcinte(); i++) {
+    printf(" %s\n", list_func_integre_str[i]);
+  }
+  printf("Utilisez la command man pour une information sur les autre commands");
+
+  return 1;
+
+}
+
+// la plus facile pour la fin
+int shell_exit(char **args){
+  return 0;
+
+}
+
+
 
 int main(int argc, char **argv){
   //chargement de fichiers de configuration a faire ici
