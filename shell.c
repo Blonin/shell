@@ -21,7 +21,7 @@ int shell_launch(char **args);
 #include <stdlib.h>   // malloc, realloc, free, exit, EXIT_SUCCESS, EXIT_FAILURE
 #include <stdio.h>    // printf, fprintf, perror
 #include <string.h>   // strtok, strcmp
-#include <sys/types>  // pid_t
+#include <sys/types.h>  // pid_t
 
 
 //déclaration global
