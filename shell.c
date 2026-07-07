@@ -93,6 +93,26 @@ int shell_exit(char **args){
 
 }
 
+// Crétion de la func exec 
+
+int shell_execute(char **args) {
+  int i;
+  
+  // verification que la commande demandé n'est pas vide
+  // Si elle est vide on renvoi 1 et rien ne se passe 
+  if (args[0] == NULL ) {
+    return 1;
+  }
+
+  for (i =0; i < shell_num_funcinte(); i++){
+    if (strcomp(args[0], list_func_integre_str[i]) == 0) {
+      return (*integre_func[i])(args);
+    }
+  }
+
+  return shell_launch(args);
+
+}
 
 
 int main(int argc, char **argv){
