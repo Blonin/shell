@@ -9,6 +9,7 @@
 // Ce Shell n'a pour le moment pas beaucoup de fonction implémenté
 
 // déclaration des includes
+#include <signal.h> // afin de gerer ctrl+c et les SIGINT
 #include <stdio.h>  // printf, fprintf, perror
 #include <stdlib.h> // malloc, realloc, free, exit, EXIT_SUCCESS, EXIT_FAILURE
 #include <string.h> // strtok, strcmp
@@ -38,6 +39,8 @@ int shell_launch(char **args) {
 
   if (pid == 0) {
     // nouveau proc fils
+    // on fait en sort que le fils ne change pas son comportement au ctrl+c
+    signal(SIGINT, SIG_DFL);
 
     if (execvp(args[0], args) == -1) {
       perror("SHELL");
@@ -70,7 +73,6 @@ int shell_num_funcinte() {
 }
 
 // Maintenant du coup on créé les fonctions
-//
 
 int shell_cd(char **args) {
 
@@ -85,7 +87,7 @@ int shell_cd(char **args) {
   return 1;
 }
 
-int shell_help(void) {
+int shell_help(char **args) {
   int i;
   printf("C'est mon shell, Blonin'shell ");
   printf("Il suffit de taper le nom d'une commande avec les arguments et "
@@ -100,7 +102,7 @@ int shell_help(void) {
 }
 
 // la plus facile pour la fin
-int shell_exit(void) { return 0; }
+int shell_exit(char **args) { return 0; }
 
 // Crétion de la func exec
 
@@ -125,6 +127,9 @@ int shell_execute(char **args) {
 int main(int argc, char **argv) {
   // chargement de fichiers de configuration a faire ici
   // comme l'apparence du shell
+
+  // le shell principal ignore le ctrl+c
+  signal(SIGINT, SIG_IGN);
 
   // lancement de la comande loop
   shell_loop();
