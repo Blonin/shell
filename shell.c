@@ -78,6 +78,7 @@ int shell_cd(char **args) {
 
   if (args[1] == NULL) {
     fprintf(stderr, "Erreur dans les arguments attendu,\"cd\" \n");
+    printf("usage : cd <repertoire>");
   } else {
     if (chdir(args[1]) != 0) {
       perror("shell_cd");
@@ -88,6 +89,7 @@ int shell_cd(char **args) {
 }
 
 int shell_help(char **args) {
+  (void)args;
   int i;
   printf("C'est mon shell, Blonin'shell ");
   printf("Il suffit de taper le nom d'une commande avec les arguments et "
@@ -102,7 +104,10 @@ int shell_help(char **args) {
 }
 
 // la plus facile pour la fin
-int shell_exit(char **args) { return 0; }
+int shell_exit(char **args) {
+  (void)args;
+  return 0;
+}
 
 // Crétion de la func exec
 
@@ -127,6 +132,8 @@ int shell_execute(char **args) {
 int main(int argc, char **argv) {
   // chargement de fichiers de configuration a faire ici
   // comme l'apparence du shell
+  (void)argc;
+  (void)argv;
 
   // le shell principal ignore le ctrl+c
   signal(SIGINT, SIG_IGN);
@@ -222,7 +229,7 @@ char *shell_read_line(void) {
   }
 }
 
-// On se dit que les "" ne seront pas utilisé ainsi que les \
+// On se dit que les "" ne seront pas utilisé ainsi que les backslash
 // On part du principe que les espace seront les délimiteurs de chaque arguments
 // On enregistre chaque token avec un pointeur pour chaque puis dans une liste
 #define SHELL_TOK_BUFFSIZE 64
